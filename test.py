@@ -1,6 +1,8 @@
-from async import asynchronizer,asynchronize
 
-a = asynchronizer(5)
+import time
+from async import asynchronize, startPool, setWorkers
+
+setWorkers(5)
 
 @asynchronize
 def func(i):
@@ -13,4 +15,4 @@ def func(i):
 for i in range(1,10):
     func(i)
 
-a.run()
+startPool()

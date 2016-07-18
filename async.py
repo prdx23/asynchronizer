@@ -3,12 +3,9 @@ monkey.patch_all()
 
 import gevent.pool
 import gevent.queue
-import gevent
-import time
-
 
 class asynchronizer():
-    def __init__(self,workers=32):
+    def __init__(self,workers):
         # workers define how many concurrent functions should be run
         self.workers = workers
         self.pool = gevent.pool.Pool(self.workers)
@@ -17,6 +14,10 @@ class asynchronizer():
     def add(self,priority,func,*args,**kwargs):
         # this function adds other functions to the priority queue
         self.pqueue.put_nowait((priority,func,args,kwargs))
+
+    def updateWorkers(self,workers):
+        self.workers = workers
+        self.pool = gevent.pool.Pool(self.workers)
 
     def run(self):
         # this function starts the gevent pool
@@ -27,6 +28,7 @@ class asynchronizer():
                 self.pool.start(self.pool.spawn(func,*args,**kwargs))
             self.pool.join()
 
+a = asynchronizer(32)
 
 def asynchronize(func):
     def converted_func(*args,**kwargs):
@@ -39,3 +41,9 @@ def asynchronize(func):
 
         a.add(priority,func,*args,**kwargs)
     return converted_func
+
+def startPool():
+    a.run()
+
+def setWorkers(workers):
+    a.updateWorkers(workers)
