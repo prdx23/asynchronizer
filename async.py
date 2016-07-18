@@ -5,11 +5,6 @@ import gevent.pool
 import gevent.queue
 import gevent
 import time
-# import requests
-#
-# max_workers = 5
-# pool = gevent.pool.Pool(max_workers)
-# queue = gevent.queue.PriorityQueue()
 
 
 class asynchronizer():
@@ -45,11 +40,3 @@ for i in range(1,10):
 
 
 a.run()
-
-#
-#
-# while not queue.empty() and not pool.full():
-#     for x in xrange(0, min(queue.qsize(), pool.free_count())):
-#         t = queue.get_nowait()
-#         pool.start(pool.spawn(t[1],t[2]))
-#     pool.join()
