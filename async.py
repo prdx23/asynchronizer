@@ -16,6 +16,7 @@ class asynchronizer():
         self.pqueue.put_nowait((priority,func,args,kwargs))
 
     def updateWorkers(self,workers):
+        # can be used to update no. of workers if run() isn't called
         self.workers = workers
         self.pool = gevent.pool.Pool(self.workers)
 
@@ -43,7 +44,9 @@ def asynchronize(func):
     return converted_func
 
 def startPool():
+    # wrapper for asynchronizer.run()
     a.run()
 
 def setWorkers(workers):
+    # wrapper for asynchronizer.updateWorkers()
     a.updateWorkers(workers)

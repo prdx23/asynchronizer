@@ -2,7 +2,7 @@
 import time
 from async import asynchronize, startPool, setWorkers
 
-setWorkers(5)
+setWorkers(7)
 
 @asynchronize
 def func(i):
