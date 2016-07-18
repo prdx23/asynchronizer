@@ -24,15 +24,16 @@ class asynchronizer():
             self.pool.join()
 
 
-def asynchronize(func):
-    def converted_func(*args,**kwargs):
-        a.add(1,func,*args,**kwargs)
-    return converted_func
-
+def asynchronize(priority=1):
+    def async_decorator(func):
+        def converted_func(*args,**kwargs):
+            a.add(priority,func,*args,**kwargs)
+        return converted_func
+    return async_decorator
 
 a = asynchronizer(5)
 
-@asynchronize
+@asynchronize(1)
 def func(i):
     print 'loop',i
     if i*100 < 1000:
