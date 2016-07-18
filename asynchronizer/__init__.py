@@ -24,7 +24,7 @@ class asynchronizer():
         # this function starts the gevent pool
         # this is a blocking function, so should be called last
         while not self.pqueue.empty() and not self.pool.full():
-            for x in xrange(0,min(self.pqueue.qsize(),self.pool.free_count())):
+            for x in range(0,min(self.pqueue.qsize(),self.pool.free_count())):
                 p,func,args,kwargs = self.pqueue.get_nowait()
                 self.pool.start(self.pool.spawn(func,*args,**kwargs))
             self.pool.join()
