@@ -4,7 +4,7 @@ Asynchronizer
 
 .. _description:
 
-**Asynchronizer** is simple module that can be used to run multiple functions asynchronously. To convert a function, you just need to add a decorator :code:`@asynchronize` to the function. This project is still in development, so report any bugs `here <https://github.com/Arsh23/asynchronizer/issues>`. For example, see the `example folder <https://github.com/Arsh23/asynchronizer/tree/master/examples>`
+**Asynchronizer** is simple module that can be used to run multiple functions asynchronously. To convert a function, you just need to add a decorator :code:`@asynchronize` to the function. This project is still in development, so report any bugs `here <https://github.com/Arsh23/asynchronizer/issues>`_. For example, see the `example folder <https://github.com/Arsh23/asynchronizer/tree/master/examples>`_
 
 .. contents::
 
