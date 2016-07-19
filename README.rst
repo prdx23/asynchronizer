@@ -4,7 +4,7 @@ Asynchronizer
 
 .. _description:
 
-**Asynchronizer** is simple module that can be used to run multiple functions asynchronously. To convert a function, you just need to add a decorator :code:`@asynchronize` to the function. 
+**Asynchronizer** is simple module that can be used to run multiple functions asynchronously. To convert a function, you just need to add a decorator :code:`@asynchronize` to the function. This project is still in development, so report any bugs `here <https://github.com/Arsh23/asynchronizer/issues>`. For example, see the `example folder <https://github.com/Arsh23/asynchronizer/tree/master/examples>`
 
 .. contents::
 
@@ -35,7 +35,7 @@ Basic use
     Suppose you have a function like this:
 
             .. code-block:: python
-    
+
                 import requests
 
                 def send_requests():
@@ -43,7 +43,7 @@ Basic use
                     print r.status_code
 
                 for _ in range(20):
-                    send_requests()  
+                    send_requests()
 
     You can modify it like this to make it asynchronous:
 
@@ -58,7 +58,7 @@ Basic use
                     print r.status_code
 
                 for _ in range(20):
-                    send_requests()  
+                    send_requests()
 
                 startPool()
 
@@ -76,10 +76,10 @@ Things to keep in mind
                 # wrong way
                 @asynchronize
                 def send_requests():
-                    for _ in range(20):                    
+                    for _ in range(20):
                         r = requests.get('http://httpbin.org/get')
 
-                send_requests()  
+                send_requests()
 
        and this is the correct way:
 
@@ -87,18 +87,18 @@ Things to keep in mind
 
                 # correct way
                 @asynchronize
-                def send_requests():                    
+                def send_requests():
                     r = requests.get('http://httpbin.org/get')
 
                 for _ in range(20):
-                    send_requests() 
- 
+                    send_requests()
+
     - Instead of returning values from your functions, send them to a callback. For example:
 
         .. code-block:: python
 
                 @asynchronize
-                def send_requests():                    
+                def send_requests():
                     r = requests.get('http://httpbin.org/get')
                     parse(r.text)
                     # instead of return r.text
@@ -107,14 +107,14 @@ Things to keep in mind
 Advanced use
 ^^^^^^^^^^^^
 
-    - If you want to modify how many functions should be called concurrently, just add :code:`setWorkers(n)` at the start of your script, with :code:`n` being the number of concurrent threads
+    - If you want to modify how many functions should be called concurrently, just add :code:`setWorkers(n)` at the start of your script, with :code:`n` being the number of concurrent threads. Default is 32.
 
     - To assign priority to a specific function call, add :code:`priority=n` to the parameters of the function call, with :code:`n` being the priority you want to set. For Example: :code:`func(param1,param2,param3,priority=2)`
 
 Contributing
 ************
 
-If you want to contribute to this project, feel free to send a Pull Request to `Github <https://github.com/Arsh23/asynchronizer>`_ 
+If you want to contribute to this project, feel free to send a Pull Request to `Github <https://github.com/Arsh23/asynchronizer>`_
 
 To report any bugs or request new features, head over to the `Issues <https://github.com/Arsh23/asynchronizer/issues>`_ page
 
