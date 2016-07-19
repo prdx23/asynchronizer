@@ -3,3 +3,5 @@ venv
 venv2
 venv3
 asynchronizer.egg-info
+build
+dist
