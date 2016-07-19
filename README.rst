@@ -25,7 +25,7 @@ Installation
 
 .. code-block:: bash
 
-    pip install asynchronizer
+    pip install asynchronizer --pre
 
 How to use
 **********
