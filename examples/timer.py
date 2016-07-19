@@ -3,6 +3,8 @@ This script will take 55 seconds to run normally,
 but only 10 seconds when run asynchronously
 '''
 
+# To run:
+# pip install asynchronizer
 import time
 from asynchronizer import asynchronize, startPool, setWorkers
 

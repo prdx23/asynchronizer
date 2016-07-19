@@ -1,3 +1,5 @@
+# To run:
+# pip install asynchronizer lxml requests
 
 import requests
 # using lxml tree to keep the example short
