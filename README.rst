@@ -1,7 +1,9 @@
 #############
 Asynchronizer
 #############
-
+.. image:: https://badge.fury.io/py/asynchronizer.svg
+    :target: https://badge.fury.io/py/asynchronizer
+    
 .. _description:
 
 **Asynchronizer** is simple module that can be used to run multiple functions asynchronously. To convert a function, you just need to add a decorator :code:`@asynchronize` to the function. This project is still in development, so report any bugs `here <https://github.com/Arsh23/asynchronizer/issues>`_. For examples, see the `examples folder <https://github.com/Arsh23/asynchronizer/tree/master/examples>`_
