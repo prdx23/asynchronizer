@@ -16,7 +16,7 @@ setup(
     description='A simple module to make functions asynchronous',
     long_description=long_description,
     url='https://github.com/Arsh23/asynchronizer',
-    download_url = 'https://github.com/Arsh23/asynchronizer/tarball/0.1',
+    download_url = 'https://github.com/Arsh23/asynchronizer/tarball/0.2.1',
     author='arsh23',
     author_email='programmer.arsh@gmail.com',
     license='MIT',
