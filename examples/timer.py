@@ -6,7 +6,7 @@ but only 10 seconds when run asynchronously
 # To run:
 # pip install asynchronizer
 import time
-from asynchronizer import asynchronize, startPool, setWorkers
+from asynchronizer import asynchronize, Wait, setWorkers
 
 # try commenting this decorater to see the effect
 @asynchronize
@@ -17,4 +17,4 @@ def func(i):
 for i in range(1,11):
     func(i)
 
-startPool()
+Wait()
