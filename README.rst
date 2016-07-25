@@ -50,7 +50,7 @@ Basic use
         .. code-block:: python
 
                 import requests
-                from asynchronizer import asynchronize, startPool
+                from asynchronizer import asynchronize, Wait
 
                 @asynchronize
                 def send_requests():
@@ -60,14 +60,14 @@ Basic use
                 for _ in range(20):
                     send_requests()
 
-                startPool()
+                Wait()
 
 Things to keep in mind
 ^^^^^^^^^^^^^^^^^^^^^^
 
-    - The function :code:`startPool()` is necessary. If :code:`startPool()` is not present, none of the asynchronous functions will run.
+    - The function :code:`Wait()` is necessary. If :code:`Wait()` is not present, none of the asynchronous functions will run.
 
-    - The function :code:`startPool()` is also a blocking function, meaning that the execution of your script will pause here till all the async functions called before this are finished. This is why it should usually be added at the end of your script
+    - The function :code:`Wait()` is also a blocking function, meaning that the execution of your script will pause here till all the async functions called before this are finished. This is why it should usually be added at the end of your script
 
     - The decorated functions are async to each other, but the code inside the functions is synchronous, which means this is wrong:
 
