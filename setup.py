@@ -12,10 +12,11 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
 
 setup(
     name='asynchronizer',
-    version='0.1.0a1',
+    version='0.2.0',
     description='A simple module to make functions asynchronous',
     long_description=long_description,
     url='https://github.com/Arsh23/asynchronizer',
+    download_url = 'https://github.com/Arsh23/asynchronizer/tarball/0.1',
     author='arsh23',
     author_email='programmer.arsh@gmail.com',
     license='MIT',
