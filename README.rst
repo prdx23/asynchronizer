@@ -116,13 +116,13 @@ Things to keep in mind
 
 - Instead of returning values from your functions, send them to a callback. For example:
 
-    .. code-block:: python
+  .. code-block:: python
 
-            @asynchronize
-            def send_requests():
-                r = requests.get('http://httpbin.org/get')
-                parse(r.text)
-                # instead of return r.text
+        @asynchronize
+        def send_requests():
+            r = requests.get('http://httpbin.org/get')
+            parse(r.text)
+            # instead of return r.text
 
 Advanced use
 ^^^^^^^^^^^^
