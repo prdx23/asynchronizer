@@ -13,8 +13,9 @@ class asynchronizer():
         self.pool = gevent.pool.Pool(self.workers)
         self.pqueue = gevent.queue.PriorityQueue()
 
-    def add(self, priority, func, *args, **kwargs):
+    def add(self, func, *args, **kwargs):
         # this function adds other functions to the priority queue
+        priority = kwargs['priority'] if 'priority' in kwargs else 1
         self.pqueue.put((priority, func, args, kwargs))
         self.startWorkers()
 
@@ -47,18 +48,12 @@ class asynchronizer():
 a = asynchronizer(32)
 
 
-def asynchronize(func):
+def asynchronize(async_func):
     def converted_func(*args, **kwargs):
-        priority = kwargs['priority'] if 'priority' in kwargs else 1
-
-        # remove these two parameters , as they are used in add()
-        # temporary fix
-        if 'priority' in kwargs:
-            del kwargs['priority']
-        if 'func' in kwargs:
-            del kwargs['func']
-
-        a.add(priority, func, *args, **kwargs)
+        # remove this parameters , as it are used in add()
+        if 'async_func' in kwargs:
+            del kwargs['async_func']
+        a.add(async_func, *args, **kwargs)
     return converted_func
 
 
