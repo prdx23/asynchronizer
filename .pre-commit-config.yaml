@@ -1,0 +1,11 @@
+-   repo: https://github.com/pre-commit/pre-commit-hooks.git
+    sha: 144c3857cdbba0b758f80aeee9f2adf42ea303ee
+    hooks:
+    -   id: trailing-whitespace
+    -   id: flake8
+    -   id: fix-encoding-pragma
+-   repo: https://github.com/asottile/reorder_python_imports.git
+    sha: b022734351abe44d0b05a71a4fa1175287c59b49
+    hooks:
+    -   id: reorder-python-imports
+        language_version: python2.7
