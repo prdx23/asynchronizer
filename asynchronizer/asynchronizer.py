@@ -38,6 +38,7 @@ class Subprocess(Actor):
         self.skip_gevent = skip_gevent
         self.pool = gevent.pool.Pool(max_workers)
         self.p_queue = gevent.queue.PriorityQueue()
+        self.proc_amount = 0
         self.start()
 
     def worker(self):
@@ -45,16 +46,19 @@ class Subprocess(Actor):
             try:
                 p, func, args, kwargs = self.p_queue.get_nowait()
                 func(*args, **kwargs)
+                self.proc_amount -= 1
             except gevent.queue.Empty:
                 break
 
     def recieve(self, item):
+        self.proc_amount += 1
 
         if self.skip_gevent is True:
             if item is None:
                 return
             p, func, args, kwargs = item
             func(*args, **kwargs)
+            self.proc_amount -= 1
             return
 
         if item is None:
