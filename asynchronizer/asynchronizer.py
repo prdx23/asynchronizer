@@ -51,6 +51,7 @@ class Subprocess(Actor):
                 break
 
     def recieve(self, item):
+        print self.name, 'recieved', item
         self.proc_amount += 1
 
         if self.skip_gevent is True:
@@ -68,3 +69,41 @@ class Subprocess(Actor):
         self.p_queue.put_nowait(item)
         for x in range(0, min(self.p_queue.qsize(), self.pool.free_count())):
             self.pool.spawn(self.worker)
+
+
+class Asynchronizer():
+
+    def __init__(self, max_processes=None, skip_mp=False):
+        if max_processes is None:
+            try:
+                self.max_processes = multiprocessing.cpu_count()
+            except:
+                self.max_processes = 4
+        elif skip_mp is True:
+            self.max_processes = 1
+        else:
+            self.max_processes = max_processes
+        self.function_queue = multiprocessing.Queue()
+        self.processes = []
+
+    def spawn_processes(self, item):
+        if len(self.processes) < self.max_processes:
+            s = Subprocess()
+            s.inbox.send(item)
+            self.processes.append(s)
+            return
+
+        amounts = [x.proc_amount for x in self.processes]
+        print amounts
+        indexes = [x[0] for x in enumerate(amounts) if x[1] == min(amounts)]
+        self.processes[indexes[0]].inbox.send(item)
+
+    def wait(self):
+        for proc in self.processes:
+            proc.join()
+
+    def end(self):
+        for proc in self.processes:
+            proc.inbox.send(None)
+        for proc in self.processes:
+            proc.join()
