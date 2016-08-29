@@ -1,48 +1,34 @@
 # -*- coding: utf-8 -*-
-import multiprocessing
 import time
+from datetime import datetime
+
+from asynchronizer import Subprocess
+
+start_time = datetime.now()
 
 
-class Actor(multiprocessing.Process):
-
-    def __init__(self):
-        multiprocessing.Process.__init__(self)
-        self.inbox, self.pipe = multiprocessing.Pipe()
-        self.start()
-
-    def run(self):
-        while True:
-            try:
-                item = self.pipe.recv()
-                if item is None:
-                    break
-                self.recieve(item)
-
-            except EOFError:
-                break
-        self.inbox.close()
-        self.pipe.close()
-
-    def recieve(self, item):
-        raise NotImplementedError
-        time.sleep(0.5)
-        print self.name, 'recieved', item
-        time.sleep(0.5)
-
+def func(item):
+    time.sleep(0.5)
+    print 'processed', item
+    time.sleep(0.5)
 
 processes = []
 for i in range(5):
-    p = Actor()
+    p = Subprocess()
     processes.append(p)
 
-
+j = 0
 for proc in processes:
     for i in range(5):
-        proc.inbox.send(i)
+        t = (1, func, [str(j) + str(i)], {})
+        proc.inbox.send(t)
     print 'send'
+    j += 1
 
 for proc in processes:
     proc.inbox.send(None)
 
 for proc in processes:
     proc.join()
+
+print 'Total time : %s' % (datetime.now() - start_time)

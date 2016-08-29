@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# from asynchronizer import asynchronize
+# from asynchronizer import Subprocess
 # from asynchronizer import setWorkers
 # from asynchronizer import Wait
 # # -*- coding: utf-8 -*-
