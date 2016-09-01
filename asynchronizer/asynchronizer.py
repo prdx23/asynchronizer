@@ -38,7 +38,6 @@ class Subprocess(Actor):
         self.skip_gevent = skip_gevent
         self.pool = gevent.pool.Pool(max_workers)
         self.p_queue = gevent.queue.PriorityQueue()
-        self.proc_amount = 0
         self.start()
 
     def worker(self):
@@ -46,20 +45,17 @@ class Subprocess(Actor):
             try:
                 p, func, args, kwargs = self.p_queue.get_nowait()
                 func(*args, **kwargs)
-                self.proc_amount -= 1
             except gevent.queue.Empty:
                 break
 
     def recieve(self, item):
-        print self.name, 'recieved', item
-        self.proc_amount += 1
 
+        # print self.name, 'recieved', item
         if self.skip_gevent is True:
             if item is None:
                 return
             p, func, args, kwargs = item
             func(*args, **kwargs)
-            self.proc_amount -= 1
             return
 
         if item is None:
@@ -83,8 +79,8 @@ class Asynchronizer():
             self.max_processes = 1
         else:
             self.max_processes = max_processes
-        self.function_queue = multiprocessing.Queue()
         self.processes = []
+        self.p = 0
 
     def spawn_processes(self, item):
         if len(self.processes) < self.max_processes:
@@ -93,10 +89,8 @@ class Asynchronizer():
             self.processes.append(s)
             return
 
-        amounts = [x.proc_amount for x in self.processes]
-        print amounts
-        indexes = [x[0] for x in enumerate(amounts) if x[1] == min(amounts)]
-        self.processes[indexes[0]].inbox.send(item)
+        self.p = (self.p + 1) % self.max_processes
+        self.processes[self.p].inbox.send(item)
 
     def wait(self):
         for proc in self.processes:
