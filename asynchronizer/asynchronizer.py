@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 import multiprocessing
+from functools import wraps
 
+import dill
 import gevent.pool
 import gevent.queue
 from gevent import monkey
@@ -22,6 +24,9 @@ class Actor(multiprocessing.Process):
                     break
             except EOFError:
                 break
+            except IOError:
+                # TODO : the gevent-mp socket pipe problem
+                continue
 
         self.inbox.close()
         self.pipe.close()
@@ -43,18 +48,20 @@ class Subprocess(Actor):
     def worker(self):
         while True:
             try:
-                p, func, args, kwargs = self.p_queue.get_nowait()
+                p, pickled_func, args, kwargs = self.p_queue.get_nowait()
+                func = dill.loads(pickled_func)
                 func(*args, **kwargs)
             except gevent.queue.Empty:
                 break
 
     def recieve(self, item):
 
-        # print self.name, 'recieved', item
+        # print self.name, 'recieved function'
         if self.skip_gevent is True:
             if item is None:
                 return
-            p, func, args, kwargs = item
+            p, pickled_func, args, kwargs = item
+            func = dill.loads(pickled_func)
             func(*args, **kwargs)
             return
 
@@ -70,7 +77,7 @@ class Subprocess(Actor):
 class Asynchronizer():
 
     def __init__(self, max_processes=None, skip_mp=False):
-        if max_processes is None:
+        if max_processes is None and skip_mp is False:
             try:
                 self.max_processes = multiprocessing.cpu_count()
             except:
@@ -82,22 +89,43 @@ class Asynchronizer():
         self.processes = []
         self.p = 0
 
-    def spawn_processes(self, item):
+    def spawn_processes(self, priority, pickled_func, args, kwargs):
+        item = (priority, pickled_func, args, kwargs)
+
         if len(self.processes) < self.max_processes:
-            s = Subprocess()
+            s = Subprocess(skip_gevent=False)
             s.inbox.send(item)
             self.processes.append(s)
             return
 
+        # TODO : optimize this, evenly distribute
+        # TODO : add check for crashed processes
         self.p = (self.p + 1) % self.max_processes
         self.processes[self.p].inbox.send(item)
 
-    def wait(self):
+    def wait_async(self):
         for proc in self.processes:
             proc.join()
 
-    def end(self):
+    def end_async(self):
         for proc in self.processes:
             proc.inbox.send(None)
         for proc in self.processes:
             proc.join()
+
+
+a = Asynchronizer(skip_mp=False)
+# TODO : func for custom workers/subprocesses
+
+
+def asynchronize(async_func):
+    @wraps(async_func)
+    def converted_func(*args, **kwargs):
+        # TODO : error handling
+        pickled_func = dill.dumps(async_func)
+        a.spawn_processes(1, pickled_func, args, kwargs)
+    return converted_func
+
+
+def end_async():
+    a.end_async()
