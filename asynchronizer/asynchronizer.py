@@ -8,6 +8,9 @@ import gevent.queue
 from gevent import monkey
 monkey.patch_all()
 
+default_w = 4
+default_sp = 4
+
 
 class Actor(multiprocessing.Process):
 
@@ -25,7 +28,7 @@ class Actor(multiprocessing.Process):
             except EOFError:
                 break
             except IOError:
-                # TODO : the gevent-mp socket pipe problem
+                # TODO : mention the gevent-mp socket pipe problem
                 continue
 
         self.inbox.close()
@@ -37,7 +40,7 @@ class Actor(multiprocessing.Process):
 
 class Subprocess(Actor):
 
-    def __init__(self, max_workers=4, skip_gevent=False):
+    def __init__(self, max_workers=default_w, skip_gevent=False):
         Actor.__init__(self)
         self.max_workers = max_workers
         self.skip_gevent = skip_gevent
@@ -76,24 +79,31 @@ class Subprocess(Actor):
 
 class Asynchronizer():
 
-    def __init__(self, max_processes=None, skip_mp=False):
+    def __init__(self,
+                 max_processes=None, skip_mp=False, max_w=None, skip_g=None):
         if max_processes is None and skip_mp is False:
             try:
                 self.max_processes = multiprocessing.cpu_count()
             except:
-                self.max_processes = 4
+                self.max_processes = default_sp
         elif skip_mp is True:
             self.max_processes = 1
         else:
             self.max_processes = max_processes
         self.processes = []
         self.p = 0
+        # TODO : fix naming of these
+        self.max_w = max_w if max_w is not None else default_w
+        self.skip_g = skip_g
 
     def spawn_processes(self, priority, pickled_func, args, kwargs):
         item = (priority, pickled_func, args, kwargs)
 
         if len(self.processes) < self.max_processes:
-            s = Subprocess(skip_gevent=False)
+            if self.skip_g is False:
+                s = Subprocess(max_workers=self.max_w, skip_gevent=False)
+            else:
+                s = Subprocess(max_workers=self.max_w, skip_gevent=True)
             s.inbox.send(item)
             self.processes.append(s)
             return
@@ -129,3 +139,22 @@ def asynchronize(async_func):
 
 def end_async():
     a.end_async()
+
+
+def config_async(
+        processes=None, greenlets=None, skip_mp=False, skip_gevent=False):
+
+    if processes is not None:
+        a.max_processes = processes if processes > 0 else 1
+
+    if greenlets is not None:
+        if greenlets > 0:
+            a.max_w = greenlets
+        else:
+            a.skip_g = True
+
+    if skip_mp is True:
+        a.max_processes = 1
+
+    if skip_gevent is True:
+        a.skip_g = True
