@@ -144,7 +144,7 @@ def wait():
 
 def config(
         processes=None,
-        greenlets=None,
+        workers=None,
         skip_mp=False,
         skip_gevent=False):
 
@@ -154,6 +154,6 @@ def config(
         a.set_processes_no(processes)
 
     if skip_gevent is True:
-        a.set_processes_no(skip_gv=True)
+        a.set_workers_no(skip_gv=True)
     else:
-        a.set_processes_no(processes)
+        a.set_workers_no(workers)
